@@ -271,6 +271,22 @@ article header h1 a {
     color: #a31d1d;
 }
 
+.article-info .article-stream {
+    color: unset;
+    font-size: 20px;
+}
+
+.article-info .article-stream a {
+    color: #1d60a3;
+}
+
+.article-stream {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3em;
+    text-align: center;
+}
+
 .post-short-list .article-info {
     margin-top: 0;
     margin-bottom: 1.5em;

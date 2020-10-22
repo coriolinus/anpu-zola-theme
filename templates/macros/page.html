@@ -1,56 +1,83 @@
+{% macro render_page(page) %}
+<article class="post">
+    <header>
+        <a href="{{page.permalink}}">
+            <h1>{{ page.title }}</h1>
+        </a>
+    </header>
+    <div class="content">
+        {{ page.content | safe }}
+    </div>
+
+    {{ page_macros::page_info(page=page) }}
+</article>
+{% endmacro render_page %}
+
 {% macro page_info(page) %}
-    <div class="article-info">
-        {% if page.date %}
-        <div class="article-date">{{ page.date | date(format=config.extra.anpu_date_format) }}</div>
+<div class="article-info">
+    {% if page.date %}
+    <div class="article-date">{{ page.date | date(format=config.extra.anpu_date_format) }}</div>
+    {% endif %}
+    <div class="article-taxonomies">
+        {% if page.taxonomies.categories %}
+        <ul class="article-categories">
+            {% for cat in page.taxonomies.categories %}
+            <li><a href="{{ get_taxonomy_url(kind="categories", name=cat) | safe }}">{{ cat }}</a></li>
+            {% endfor %}
+        </ul>
         {% endif %}
-        <div class="article-taxonomies">
-            {% if page.taxonomies.categories %}
-                <ul class="article-categories">
-                    {% for cat in page.taxonomies.categories %}
-                    <li><a href="{{ get_taxonomy_url(kind="categories", name=cat) | safe }}">{{ cat }}</a></li>
-                    {% endfor %}
-                </ul>
+        {% if page.taxonomies.tags %}
+        <ul class="article-tags">
+            {% for tag in page.taxonomies.tags %}
+            <li><a href="{{ get_taxonomy_url(kind="tags", name=tag) | safe }}">#{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="article-stream {% if not page.earlier and not page.later %}disabled{% endif %}">
+        <div class="left article-stream-item {% if not page.later %}disabled{% endif %}">
+            {% if page.later %}
+            <a href="{{ page.later.permalink }}">← Newer Posts</a>
             {% endif %}
-            {% if page.taxonomies.tags %}
-                <ul class="article-tags">
-                    {% for tag in page.taxonomies.tags %}
-                    <li><a href="{{ get_taxonomy_url(kind="tags", name=tag) | safe }}">#{{ tag }}</a></li>
-                    {% endfor %}
-                </ul>
+        </div>
+        <div class="right article-stream-item {% if not page.earlier %}disabled{% endif %}">
+            {% if page.earlier %}
+            <a href="{{ page.earlier.permalink }}">Older Posts →</a>
             {% endif %}
         </div>
     </div>
+</div>
 {% endmacro page_info %}
 
 {% macro page_listing(page) %}
-    <article class="post-list">
-        <header> 
-            <h1>
-                <a href="{{ page.permalink }}">{{ page.title }}</a>
-            </h1>
-        </header>
+<article class="post-list">
+    <header>
+        <h1>
+            <a href="{{ page.permalink }}">{{ page.title }}</a>
+        </h1>
+    </header>
 
-        {% if page.summary %}
-        <div class="content post-summary">
-            {{ page.summary | markdown | safe }}
-        </div>
-        {% endif %}
-        
-        {{ self::page_info(page=page) }}
-    </article>
+    {% if page.summary %}
+    <div class="content post-summary">
+        {{ page.summary | markdown | safe }}
+    </div>
+    {% endif %}
+
+    {{ self::page_info(page=page) }}
+</article>
 {% endmacro page_listing %}
 
 {% macro page_pagination(paginator) %}
-    <div class="pagination">
-        <div class="left pagination-item {% if not paginator.previous %}disabled{% endif %}">
-            {% if paginator.previous %}
-            <a href="{{ paginator.previous }}">To newer posts</a>
-            {% endif %}
-        </div>
-        <div class="right pagination-item {% if not paginator.next %}disabled{% endif %}">
-            {% if paginator.next %}
-            <a href="{{ paginator.next }}">To older posts</a>
-            {% endif %}
-        </div>
+<div class="pagination">
+    <div class="left pagination-item {% if not paginator.previous %}disabled{% endif %}">
+        {% if paginator.previous %}
+        <a href="{{ paginator.previous }}">To newer posts</a>
+        {% endif %}
     </div>
+    <div class="right pagination-item {% if not paginator.next %}disabled{% endif %}">
+        {% if paginator.next %}
+        <a href="{{ paginator.next }}">To older posts</a>
+        {% endif %}
+    </div>
+</div>
 {% endmacro page_pagination %}
