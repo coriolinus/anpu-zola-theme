@@ -420,6 +420,22 @@ ul.language-select > li {
     margin-right: 1em;
 }
 
+/* Footnotes */
+
+.footnote-definition {
+    font-size: 90%;
+    padding-bottom: 0.8em;
+    display: flex;
+}
+
+.footnote-definition p {
+    margin-left: 0.5em;
+}
+
+.footnote-definition-label:after {
+    content: ":";
+}
+
 /* Media Queries */
 
 @media (max-width: 840px) {
