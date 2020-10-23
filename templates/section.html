@@ -1,0 +1,40 @@
+{% import "macros/page.html" as page_macros %}
+{% extends "index.html" %}
+
+{% block title %}{{ config.title }}{% if title %}: {{ title }}{% endif %}{% endblock %}
+
+{% block content %}
+{# render section navigation #}
+<div class="section-navigation">
+    <span class="current-path">
+        {# Special-case the first ancestor #}
+        {% set ancestor_section = get_section(path="_index.md", metadata_only=true) %}
+        <a href="{{ ancestor_section.permalink }}">/</a>
+
+        {# now handle the rest of them #}
+        {% for ancestor in section.ancestors | slice(start=1) %}
+        {% set ancestor = get_section(path=ancestor, metadata_only=true) %}
+        <a href="{{ ancestor.permalink }}">{{ ancestor.components | last }}</a> /
+        {% endfor %}
+        <b>{{ section.components | last }}</b>
+    </span>
+    <ul>
+        {% for subsection in section.subsections %}
+        {% set subsection = get_section(path=subsection, metadata_only=true) %}
+        <li>├ <a href="{{ subsection.permalink }}">{{ subsection.components | last }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+{# render section content #}
+{% if paginator.pages %}
+{% for page in paginator.pages %}
+{{ page_macros::page_listing(page=page) }}
+{% endfor %}
+{{ page_macros::page_pagination(paginator=paginator) }}
+{% elif section.pages %}
+{% for page in section.pages %}
+{{ page_macros::page_listing(page=page) }}
+{% endfor %}
+{% endif %}
+{% endblock content %}
